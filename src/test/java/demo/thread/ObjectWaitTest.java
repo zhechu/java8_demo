@@ -95,4 +95,74 @@ public class ObjectWaitTest {
     System.out.println("end interrupt threadA");
   }
 
+  @Test
+  public void waitNotifyByTimeout() throws Exception {
+    // 创建线程
+    Thread threadA = new Thread(() -> {
+      try {
+        System.out.println("begin");
+
+        // 阻塞当前线程，2 秒后超时唤醒
+        synchronized (obj) {
+          obj.wait(2000);
+        }
+
+        System.out.println("end");
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    });
+
+    threadA.start();
+
+    threadA.join();
+
+    System.out.println("main over");
+  }
+
+  @Test
+  public void waitBlockForTimeout() throws Exception {
+    // 创建线程
+    Thread threadA = new Thread(() -> {
+      try {
+        System.out.println("threadA begin");
+
+        // 阻塞当前线程，2 秒后超时唤醒
+        synchronized (obj) {
+          System.out.println("threadA try wait");
+          obj.wait(3000);
+        }
+
+        System.out.println("threadA end");
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    });
+
+    // 创建线程
+    Thread threadB = new Thread(() -> {
+      try {
+        System.out.println("threadB begin");
+
+        // 阻塞当前线程，2 秒后超时唤醒
+        synchronized (obj) {
+          System.out.println("threadB try wait");
+          obj.wait(1000);
+        }
+
+        System.out.println("threadB end");
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    });
+
+    threadA.start();
+    threadB.start();
+
+    threadA.join();
+    threadB.join();
+
+    System.out.println("main over");
+  }
+
 }

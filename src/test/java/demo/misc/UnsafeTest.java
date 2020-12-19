@@ -8,6 +8,15 @@ import java.lang.reflect.Field;
 public class UnsafeTest {
 
   @Test
+  public void park() {
+    System.out.println("begin ...");
+
+    unsafe.park(false, 3000000000L);
+
+    System.out.println("end ...");
+  }
+
+  @Test
   public void compareAndSwapLong() {
     System.out.println("start ....");
 

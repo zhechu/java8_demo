@@ -23,6 +23,17 @@ public class ThreadLocalTest {
     System.out.println(Thread.currentThread() + ":" + threadLocal.get());
   }
 
+  @Test
+  public void set() {
+    ThreadLocal<String> threadLocal = new ThreadLocal<>();
+
+    for (int i = 0; i < 100; i++) {
+      threadLocal.set(String.valueOf(i));
+    }
+
+    System.out.println(threadLocal.get());
+  }
+
   private static ThreadLocal<String> inheritableThreadLocal = new InheritableThreadLocal<>();
 
   /**

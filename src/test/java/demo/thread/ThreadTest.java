@@ -4,6 +4,9 @@ import org.junit.Test;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.LockSupport;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 线程创建方式
@@ -62,6 +65,99 @@ public class ThreadTest {
     System.out.println("MyThread exec result:" + result);
 
     System.out.println(Thread.currentThread().getName() + ": over");
+  }
+
+  public void exit() {
+    System.out.println("main start");
+
+    Thread thread = new Thread(() -> {
+      for (;;) {
+        System.out.println("child run ...");
+        try {
+          Thread.sleep(500);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+
+    thread.setDaemon(true);
+    thread.start();
+
+    System.out.println("main exit");
+  }
+
+  /**
+   * 测试子线程未退出则进程不退出
+   * @param args
+   */
+  public static void main(String[] args) {
+    new ThreadTest().exit();
+  }
+
+  /**
+   * 线程被锁阻塞后，调用打断方法不会抛出异常
+   * 能够被中断的阻塞称为轻量级阻塞，对应的线程状态是WAITING或者TIMED_WAITING；
+   * 而像synchronized这种不能被中断的阻塞称为重量级阻塞，对应的状态是BLOCKED
+   */
+  @Test
+  public void lockAndInterrupt() {
+    Lock lock = new ReentrantLock();
+
+    System.out.println("main start");
+
+    Thread thread = new Thread(() -> {
+      lock.lock();
+      try {
+        System.out.println("child run ...");
+      } finally {
+        lock.unlock();
+      }
+    });
+
+    thread.start();
+
+    lock.lock();
+    try {
+      System.out.println("main run ...");
+      Thread.sleep(1000);
+      thread.interrupt();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } finally {
+      lock.unlock();
+    }
+
+    System.out.println("main exit");
+  }
+
+  /**
+   * 线程调用 park 方法后被中断，不会抛出异常，但会马上从阻塞状态变为可运行状态
+   */
+  @Test
+  public void parkAndInterrupt() {
+    System.out.println("main start");
+
+    Thread thread = new Thread(() -> {
+      try {
+        LockSupport.park(5000000000L);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      System.out.println("child run ...");
+    });
+
+    thread.start();
+
+    try {
+      System.out.println("main run ...");
+      Thread.sleep(1000);
+      thread.interrupt();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
+    System.out.println("main exit");
   }
 
 }

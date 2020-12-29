@@ -3,7 +3,6 @@ package demo.atomic;
 import org.junit.Test;
 
 import java.util.concurrent.atomic.LongAccumulator;
-import java.util.function.LongBinaryOperator;
 
 /**
  * 原子累加器

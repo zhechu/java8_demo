@@ -23,9 +23,32 @@ public class BaseTypeTest {
   @Test
   public void intTest() {
     int a = 1000000000;
-    int b = 1000000000;
-    int result = a * b;
-    System.out.println(result);
+//    int b = 1000000000;
+//    int result = a * b;
+//    System.out.println(result);
+
+    int c = 1;
+    System.out.println(c);
+
+    c = c + a;
+    System.out.println(c);
+
+    c += a;
+    System.out.println(c);
+
+    byte b = 1;
+    byte i = 1;
+    i += b;
+
+    int bb = 0b0101;
+    System.out.println(~bb);
+
+    int a1 = 1;
+    int a2 = 2;
+    a1 ^= a2;
+    a2 ^= a1;
+    a1 ^= a2;
+    System.out.println(a1 + "," + a2);
   }
 
   @Test
@@ -34,6 +57,12 @@ public class BaseTypeTest {
     float b = 1.1234567F;
     System.out.println(a);
     System.out.println(b);
+
+    float f = 123.23E5F;
+    System.out.println(f);
+
+    float i = 0x12.23P2F;
+    System.out.println(i);
   }
 
   @Test
@@ -42,6 +71,25 @@ public class BaseTypeTest {
     double b = 1.123456789012345;
     System.out.println(a);
     System.out.println(b);
+  }
+
+  @Test
+  public void stringTest() {
+    String a = "\u0061";
+    System.out.println(a);
+  }
+
+  /**
+   * 不规则多维数组
+   */
+  @Test
+  public void arrayTest() {
+    int[][] array = new int[5][];
+    array[0] = new int[1];
+    array[1] = new int[2];
+    array[2] = new int[3];
+    array[3] = new int[4];
+    array[4] = new int[5];
   }
 
 }

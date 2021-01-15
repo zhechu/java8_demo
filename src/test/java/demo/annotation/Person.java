@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 public @interface Person {
 
   String role() default "";
-
+  
   @Target(ElementType.TYPE)
   @Retention(RetentionPolicy.RUNTIME)
   @interface List {

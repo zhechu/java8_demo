@@ -34,4 +34,26 @@ public class ListTest {
     list.forEach(System.out::println);
   }
 
+  /**
+   * 默认容量为 10
+   */
+  @Test
+  public void defaultInitialCapacity() {
+    List<Integer> list = new ArrayList<>();
+
+    for (int i = 0; i < 20; i++) {
+      list.add(i);
+    }
+  }
+
+  @Test
+  public void initialCapacity() {
+    int initialCapacity = 20;
+    List<Integer> list = new ArrayList<>(initialCapacity);
+
+    for (int i = 0; i < 20; i++) {
+      list.add(i);
+    }
+  }
+
 }

@@ -78,16 +78,24 @@ public class TreeSetTest {
    */
   @Test
   public void sortedSet() {
-    Set<CacheData> sortedSet = new ConcurrentSkipListSet<>((o1, o2) -> {
+    Set<CacheData> sortedSet = new TreeSet<>((o1, o2) -> {
       if (o1.getScore() == o2.getScore()) {
-        return 0;
+        if (o1.getId().equals(o2.getId())) {
+          return 0;
+        }
+
+        return o1.getId().compareTo(o2.getId());
       }
+
       return o1.getScore() > o2.getScore() ? 1 : -1;
     });
+    Map<String, Double> sortedMap = new HashMap<>();
 
     Random random = new Random();
     for (int i = 0; i < 100; i++) {
-      sortedSet.add(new CacheData(String.valueOf(i), random.nextDouble()));
+      CacheData cacheData = new CacheData(String.valueOf(i), random.nextDouble());
+      sortedSet.add(cacheData);
+      sortedMap.put(cacheData.getId(), cacheData.getScore());
     }
 
     int page = 1;
@@ -100,19 +108,30 @@ public class TreeSetTest {
 
     System.out.println("=================================");
 
+    for (int i = 100; i < 110; i++) {
+      CacheData cacheData = new CacheData(String.valueOf(i), 100);
+      sortedSet.add(cacheData);
+      sortedMap.put(cacheData.getId(), cacheData.getScore());
+    }
+
     sortedSet.forEach(System.out::println);
 
-    // 覆盖
-    sortedSet.add(new CacheData("99", random.nextDouble()));
+    // 更新 99 的分值
+    String id = "99";
+    CacheData cacheData = new CacheData(id, sortedMap.get(id));
+    sortedSet.remove(cacheData);
+    Double score = random.nextDouble();
+    cacheData.setScore(score);
+    sortedSet.add(cacheData);
+    sortedMap.put(id, score);
 
     System.out.println("=================================");
 
     sortedSet.stream().filter(o -> o.getId().equals("99")).forEach(System.out::println);
 
-    CacheData cacheDataA = new CacheData("99", random.nextDouble());
-    CacheData cacheDataB = new CacheData("99", random.nextDouble());
-    System.out.println(cacheDataA.equals(cacheDataB));
-    System.out.println(cacheDataA.hashCode() + "=" + cacheDataB.hashCode());
+    System.out.println("=================================");
+
+    sortedSet.stream().filter(o -> o.getScore() >= 100).forEach(System.out::println);
   }
 
   @Test
@@ -138,9 +157,7 @@ public class TreeSetTest {
 
 }
 
-@Setter
-@Getter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 class CacheData {
@@ -148,27 +165,5 @@ class CacheData {
   private String id;
 
   private double score;
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null)
-      return false;
-    if (getClass() != o.getClass())
-      return false;
-    CacheData other = (CacheData) o;
-    if (id == null) {
-      if (other.id != null)
-        return false;
-    } else if (!id.equals(other.id))
-      return false;
-    return true;
-  }
-
-  @Override
-  public int hashCode() {
-    return id == null ? 0 : id.hashCode();
-  }
 
 }

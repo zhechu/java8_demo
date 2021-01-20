@@ -3,6 +3,7 @@ package demo.api;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ListTest {
@@ -54,6 +55,27 @@ public class ListTest {
     for (int i = 0; i < 20; i++) {
       list.add(i);
     }
+  }
+
+  @Test
+  public void forEachRemaining() {
+    List<Integer> list = new ArrayList<>();
+    for (int i = 0; i < 10; i++) {
+      list.add(i);
+    }
+
+    Iterator<Integer> iterator = list.iterator();
+    while (iterator.hasNext()) {
+      Integer i = iterator.next();
+      if (i > 5) {
+        break;
+      }
+      System.out.println(i);
+    }
+
+    System.out.println("========================");
+
+    iterator.forEachRemaining(System.out::println);
   }
 
 }

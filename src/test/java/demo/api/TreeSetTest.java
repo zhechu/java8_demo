@@ -78,7 +78,7 @@ public class TreeSetTest {
    */
   @Test
   public void sortedSet() {
-    Set<CacheData> sortedSet = new TreeSet<>((o1, o2) -> {
+    TreeSet<CacheData> sortedSet = new TreeSet<>((o1, o2) -> {
       if (o1.getScore() == o2.getScore()) {
         if (o1.getId().equals(o2.getId())) {
           return 0;
@@ -128,6 +128,10 @@ public class TreeSetTest {
     System.out.println("=================================");
 
     sortedSet.stream().filter(o -> o.getId().equals("99")).forEach(System.out::println);
+
+    System.out.println("=================================");
+
+    sortedSet.tailSet(new CacheData("0", 100), true).forEach(System.out::println);
 
     System.out.println("=================================");
 
